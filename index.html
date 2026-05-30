@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>БерАрбо — Профессиональный калькулятор стоимости услуг арбориста</title>
+<style>
+  :root {
+    --primary: #0D9488;
+    --primary-dark: #0a7a70;
+    --primary-light: #e0f7f4;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --bg: #ffffff;
+    --bg-alt: #f8fafb;
+    --border: #e2e8f0;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-alt);
+    color: var(--text-dark);
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    padding: 40px 20px 36px;
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .header .slogan {
+    font-size: 1.05rem;
+    opacity: 0.92;
+    margin-bottom: 4px;
+  }
+  .header .specialist {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin-bottom: 10px;
+  }
+  .header .phone {
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .header .phone a {
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(255,255,255,0.5);
+    transition: border-color 0.2s;
+  }
+  .header .phone a:hover { border-color: #fff; }
+
+  /* MAIN */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* SECTION CARDS */
+  .section-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 28px 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+  .section-card h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-card h2 .icon {
+    width: 28px;
+    height: 28px;
+    background: var(--primary-light);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* FORM ELEMENTS */
+  label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-dark);
+  }
+  input[type="number"],
+  input[type="text"],
+  input[type="tel"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--text-dark);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+  }
+  textarea {
+    min-height: 140px;
+    resize: vertical;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-group { margin-bottom: 14px; }
+
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-top: 10px;
+    margin-bottom: 6px;
+  }
+  .checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    font-size: 0.88rem;
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+  .checkbox-group input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 16px;
+    height: 16px;
+  }
+
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+  .radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    font-size: 0.88rem;
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+  .radio-group input[type="radio"] {
+    accent-color: var(--primary);
+  }
+
+  .note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(13,148,136,0.3);
+  }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-outline {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+  .btn-outline:hover { background: var(--primary-light); }
+  .btn-secondary {
+    background: #64748b;
+    color: #fff;
+  }
+  .btn-secondary:hover { background: #475569; }
+  .btn-danger {
+    background: #ef4444;
+    color: #fff;
+  }
+  .btn-danger:hover { background: #dc2626; }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin: 32px 0;
+  }
+
+  /* RESULT BLOCK */
+  #result-block {
+    background: var(--bg);
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+    display: none;
+  }
+  #result-block.visible { display: block; }
+  #result-block h3 {
+    color: var(--primary);
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+  #result-block table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+  }
+  #result-block table th,
+  #result-block table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  #result-block table th {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 700;
+  }
+  #result-block .total-row {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    text-align: right;
+    padding-top: 12px;
+  }
+
+  /* TECH SPEC */
+  #tech-spec-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+    display: none;
+  }
+  #tech-spec-block.visible { display: block; }
+  #tech-spec-block h3 {
+    color: var(--primary);
+    font-size: 1.15rem;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .tech-spec-content {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .signature-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border);
+  }
+  .signature-box {
+    text-align: center;
+  }
+  .signature-box .line {
+    border-bottom: 1px solid var(--text-dark);
+    height: 40px;
+    margin-bottom: 6px;
+  }
+  .signature-box p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 28px 20px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .header h1 { font-size: 1.8rem; }
+    .form-row, .form-row.three { grid-template-columns: 1fr; }
+    .section-card { padding: 20px 16px; }
+    .signature-area { grid-template-columns: 1fr; gap: 30px; }
+    .btn { width: 100%; justify-content: center; }
+  }
+
+  /* PRINT: Только Техническое задание */
+  @media print {
+    body { background: #fff; }
+    .header, .section-card, .btn-group, .no-print, #result-block, .footer { display: none !important; }
+    #tech-spec-block.visible { 
+      display: block !important; 
+      border: none; 
+      box-shadow: none; 
+      padding: 40px 0; 
+      margin: 0;
+    }
+    .container { padding: 0; max-width: 100%; }
+    .signature-area { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <h1>🌲 БерАрбо</h1>
+  <p class="slogan">Профессиональный калькулятор стоимости услуг</p>
+  <p class="specialist">Арборист высшей категории — Сторожев Виталий Олегович</p>
+  <p class="phone">📞 <a href="tel:+79128891679">8 (912) 889-16-79</a></p>
+</header>
+
+<div class="container">
+
+  <!-- 1. Удаление деревьев -->
+  <div class="section-card">
+    <h2><span class="icon">🪓</span> 1. Удаление деревьев</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Диаметр ствола (см)</label>
+        <select id="tree-diameter">
+          <option value="10000">до 20 см — 10 000 ₽</option>
+          <option value="15000">до 25 см — 15 000 ₽</option>
+          <option value="20000">до 30 см — 20 000 ₽</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Количество стволов</label>
+        <input type="number" id="tree-count" value="1" min="1" max="999">
+      </div>
+    </div>
+    <label>Дополнительные условия:</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="tree-fallen" value="10"> Упавшее / повисшее на ветках (+10%)</label>
+      <label><input type="checkbox" id="tree-dried" value="20"> Засохшее / полое внутри (+20%)</label>
+      <label>
+        Наклоненное:
+        <select id="tree-leaning" style="width:auto;padding:4px 8px;font-size:0.85rem;">
+          <option value="0">нет</option>
+          <option value="10">+10%</option>
+          <option value="15">+15%</option>
+          <option value="20">+20%</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="tree-confined" value="40"> Стеснённые условия / рядом с постройками / ЛЭП (+40%)</label>
+    </div>
+  </div>
+
+  <!-- 2. Обработка пня -->
+  <div class="section-card">
+    <h2><span class="icon">🪵</span> 2. Обработка пня составом для предотвращения поросли</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Количество пней</label>
+        <input type="number" id="stump-count" value="0" min="0" max="999">
+      </div>
+      <div class="form-group">
+        <label>Стоимость за пень</label>
+        <input type="text" value="2 000 ₽" disabled style="background:#f1f5f9;">
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Удаление кустарниковой поросли -->
+  <div class="section-card">
+    <h2><span class="icon">🌿</span> 3. Удаление кустарниковой поросли</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Количество часов</label>
+        <input type="number" id="shrub-hours" value="0" min="0" step="0.5" max="999">
+      </div>
+      <div class="form-group">
+        <label>Стоимость в час</label>
+        <input type="text" value="5 000 ₽/ч" disabled style="background:#f1f5f9;">
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Санитарная подрезка (высотная) -->
+  <div class="section-card">
+    <h2><span class="icon">🧗</span> 4. Санитарная подрезка деревьев (высотная, с использованием снаряжения)</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Количество часов</label>
+        <input type="number" id="prune-aerial-hours" value="0" min="0" step="0.5" max="999">
+      </div>
+      <div class="form-group">
+        <label>Стоимость в час</label>
+        <input type="text" value="10 000 ₽/ч" disabled style="background:#f1f5f9;">
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Санитарная подрезка с земли -->
+  <div class="section-card">
+    <h2><span class="icon">✂️</span> 5. Санитарная подрезка деревьев и кустарников с земли</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Количество часов</label>
+        <input type="number" id="prune-ground-hours" value="0" min="0" step="0.5" max="999">
+      </div>
+      <div class="form-group">
+        <label>Стоимость в час</label>
+        <input type="text" value="5 000 ₽/ч" disabled style="background:#f1f5f9;">
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Обработка стволов лечебными составами -->
+  <div class="section-card">
+    <h2><span class="icon">💊</span> 6. Обработка стволов лечебными составами (вар, побелка, подвой)</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Количество часов</label>
+        <input type="number" id="treatment-hours" value="0" min="0" step="0.5" max="999">
+      </div>
+      <div class="form-group">
+        <label>Стоимость в час</label>
+        <input type="text" value="5 000 ₽/ч" disabled style="background:#f1f5f9;">
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Фигурная подрезка -->
+  <div class="section-card">
+    <h2><span class="icon">🎨</span> 7. Фигурная подрезка деревьев и кустарников</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Тип работ</label>
+        <div class="radio-group">
+          <label><input type="radio" name="shaping-type" value="5000" checked> С земли (5 000 ₽/ч)</label>
+          <label><input type="radio" name="shaping-type" value="10000"> Высотная (10 000 ₽/ч)</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Количество часов</label>
+        <input type="number" id="shaping-hours" value="0" min="0" step="0.5" max="999">
+      </div>
+      <div class="form-group">
+        <label>Стоимость в час</label>
+        <input type="text" id="shaping-rate-display" value="5 000 ₽/ч" disabled style="background:#f1f5f9;">
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Распил стволов и порубочных остатков -->
+  <div class="section-card">
+    <h2><span class="icon">🪚</span> 8. Распил стволов и порубочных остатков на чурки (дрова)</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Диаметр ствола</label>
+        <select id="debris-diameter">
+          <option value="1500">до 20 см — 1 500 ₽/ствол</option>
+          <option value="2250">до 25 см — 2 250 ₽/ствол</option>
+          <option value="3000">до 30 см — 3 000 ₽/ствол</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Количество стволов</label>
+        <input type="number" id="debris-count" value="0" min="0" max="999">
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Вынос порубочных остатков -->
+  <div class="section-card">
+    <h2><span class="icon">🚶</span> 9. Вынос порубочных остатков вручную</h2>
+    <p class="note" style="margin-bottom:10px;">До 10 метров — бесплатно. Каждые последующие 10 метров + 1 000 ₽.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Расстояние выноса (м)</label>
+        <input type="number" id="carry-distance" value="0" min="0" step="10" max="999">
+      </div>
+      <div class="form-group">
+        <label>Стоимость</label>
+        <input type="text" id="carry-cost-display" value="0 ₽" disabled style="background:#f1f5f9;">
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. Вывоз порубочных остатков -->
+  <div class="section-card">
+    <h2><span class="icon">🚛</span> 10. Вывоз порубочных остатков (погрузка, транспортировка, разгрузка)</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Количество деревьев (м³, 1 дерево = 1 машина)</label>
+        <input type="number" id="removal-trees" value="0" min="0" max="999">
+      </div>
+      <div class="form-group">
+        <label>Стоимость за машину</label>
+        <input type="text" value="5 000 ₽" disabled style="background:#f1f5f9;">
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT INFO -->
+  <div class="section-card">
+    <h2><span class="icon">📋</span> Контакты, примечания и пожелания</h2>
+    <div class="form-group">
+      <textarea id="contact-notes" placeholder="Укажите ваши контактные данные, адрес объекта, особые пожелания, примечания к заказу..."></textarea>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="btn-group no-print">
+    <button class="btn btn-primary" onclick="calculate()">🧮 Выполнить расчёт</button>
+    <button class="btn btn-danger" onclick="clearAll()">🗑 Очистить</button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result-block">
+    <h3>📊 Результат расчёта</h3>
+    <table id="result-table">
+      <thead>
+        <tr>
+          <th>Услуга</th>
+          <th>Детализация</th>
+          <th style="text-align:right;">Стоимость</th>
+        </tr>
+      </thead>
+      <tbody id="result-tbody"></tbody>
+    </table>
+    <div class="total-row" id="result-total"></div>
+  </div>
+
+  <!-- TECH SPEC -->
+  <div id="tech-spec-block">
+    <h3>📄 Техническое задание</h3>
+    <div class="tech-spec-content" id="tech-spec-content"></div>
+    <div class="signature-area">
+      <div class="signature-box">
+        <p><strong>Заказчик</strong></p>
+        <div class="line"></div>
+        <p>ФИО / подпись / дата</p>
+      </div>
+      <div class="signature-box">
+        <p><strong>Исполнитель</strong></p>
+        <div class="line"></div>
+        <p>Сторожев В.О. / подпись / дата</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEND & PRINT -->
+  <div class="btn-group no-print" id="send-print-btns" style="display:none;">
+    <button class="btn btn-primary" onclick="sendTechSpec()">📧 Отправить тех.задание</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨 Печать</button>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© 2026 БерАрбо — Профессиональные услуги арбориста. Все права защищены.</p>
+  <p>Сторожев Виталий Олегович · <a href="tel:+79128891679" style="color:var(--primary);text-decoration:none;">8 (912) 889-16-79</a></p>
+</footer>
+
+<script>
+  // Update shaping rate display
+  document.querySelectorAll('input[name="shaping-type"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      var val = parseInt(this.value);
+      document.getElementById('shaping-rate-display').value = val === 5000 ? '5 000 ₽/ч' : '10 000 ₽/ч';
+    });
+  });
+
+  // Update carry cost display on input
+  document.getElementById('carry-distance').addEventListener('input', updateCarryCost);
+  function updateCarryCost() {
+    var dist = parseInt(document.getElementById('carry-distance').value) || 0;
+    var cost = 0;
+    if (dist > 10) {
+      cost = Math.ceil((dist - 10) / 10) * 1000;
+    }
+    document.getElementById('carry-cost-display').value = cost === 0 ? '0 ₽ (бесплатно)' : cost.toLocaleString('ru-RU') + ' ₽';
+  }
+
+  function fmt(n) {
+    return n.toLocaleString('ru-RU') + ' ₽';
+  }
+
+  function clearAll() {
+    document.querySelectorAll('input[type="number"]').forEach(function(el) {
+      if (el.id === 'tree-count') el.value = 1;
+      else el.value = 0;
+    });
+    document.getElementById('tree-diameter').selectedIndex = 0;
+    document.getElementById('debris-diameter').selectedIndex = 0;
+    document.getElementById('tree-leaning').selectedIndex = 0;
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(el) { el.checked = false; });
+    document.querySelector('input[name="shaping-type"][value="5000"]').checked = true;
+    document.getElementById('shaping-rate-display').value = '5 000 ₽/ч';
+    document.getElementById('contact-notes').value = '';
+    document.getElementById('result-block').classList.remove('visible');
+    document.getElementById('tech-spec-block').classList.remove('visible');
+    document.getElementById('send-print-btns').style.display = 'none';
+    updateCarryCost();
+  }
+
+  function calculate() {
+    var rows = [];
+    var grandTotal = 0;
+
+    // 1. Tree removal
+    var treePrice = parseInt(document.getElementById('tree-diameter').value);
+    var treeCount = parseInt(document.getElementById('tree-count').value) || 0;
+    var treeModifiers = 0;
+    var treeModLabels = [];
+    if (document.getElementById('tree-fallen').checked) {
+      treeModifiers += 10;
+      treeModLabels.push('упавшее/повисшее +10%');
+    }
+    if (document.getElementById('tree-dried').checked) {
+      treeModifiers += 20;
+      treeModLabels.push('засохшее/полое +20%');
+    }
+    var leaningVal = parseInt(document.getElementById('tree-leaning').value) || 0;
+    if (leaningVal > 0) {
+      treeModifiers += leaningVal;
+      treeModLabels.push('наклоненное +' + leaningVal + '%');
+    }
+    if (document.getElementById('tree-confined').checked) {
+      treeModifiers += 40;
+      treeModLabels.push('стеснённые условия/ЛЭП +40%');
+    }
+    if (treeCount > 0) {
+      var treeTotal = treePrice * treeCount * (1 + treeModifiers / 100);
+      var detail = 'Диаметр: ' + document.getElementById('tree-diameter').selectedOptions[0].text + ' × ' + treeCount + ' шт.';
+      if (treeModLabels.length > 0) detail += '; ' + treeModLabels.join(', ');
+      rows.push({ name: 'Удаление деревьев', detail: detail, cost: Math.round(treeTotal) });
+      grandTotal += Math.round(treeTotal);
+    }
+
+    // 2. Stump treatment
+    var stumpCount = parseInt(document.getElementById('stump-count').value) || 0;
+    if (stumpCount > 0) {
+      var stumpTotal = stumpCount * 2000;
+      rows.push({ name: 'Обработка пня', detail: stumpCount + ' шт. × 2 000 ₽', cost: stumpTotal });
+      grandTotal += stumpTotal;
+    }
+
+    // 3. Shrub removal
+    var shrubHours = parseFloat(document.getElementById('shrub-hours').value) || 0;
+    if (shrubHours > 0) {
+      var shrubTotal = shrubHours * 5000;
+      rows.push({ name: 'Удаление кустарниковой поросли', detail: shrubHours + ' ч × 5 000 ₽/ч', cost: shrubTotal });
+      grandTotal += shrubTotal;
+    }
+
+    // 4. Aerial pruning
+    var aerialHours = parseFloat(document.getElementById('prune-aerial-hours').value) || 0;
+    if (aerialHours > 0) {
+      var aerialTotal = aerialHours * 10000;
+      rows.push({ name: 'Санитарная подрезка (высотная)', detail: aerialHours + ' ч × 10 000 ₽/ч', cost: aerialTotal });
+      grandTotal += aerialTotal;
+    }
+
+    // 5. Ground pruning
+    var groundHours = parseFloat(document.getElementById('prune-ground-hours').value) || 0;
+    if (groundHours > 0) {
+      var groundTotal = groundHours * 5000;
+      rows.push({ name: 'Санитарная подрезка (с земли)', detail: groundHours + ' ч × 5 000 ₽/ч', cost: groundTotal });
+      grandTotal += groundTotal;
+    }
+
+    // 6. Treatment
+    var treatmentHours = parseFloat(document.getElementById('treatment-hours').value) || 0;
+    if (treatmentHours > 0) {
+      var treatmentTotal = treatmentHours * 5000;
+      rows.push({ name: 'Обработка стволов лечебными составами', detail: treatmentHours + ' ч × 5 000 ₽/ч', cost: treatmentTotal });
+      grandTotal += treatmentTotal;
+    }
+
+    // 7. Shaping
+    var shapingRate = parseInt(document.querySelector('input[name="shaping-type"]:checked').value);
+    var shapingHours = parseFloat(document.getElementById('shaping-hours').value) || 0;
+    if (shapingHours > 0) {
+      var shapingTotal = shapingHours * shapingRate;
+      var shapingType = shapingRate === 5000 ? 'с земли' : 'высотная';
+      rows.push({ name: 'Фигурная подрезка (' + shapingType + ')', detail: shapingHours + ' ч × ' + (shapingRate / 1000).toLocaleString('ru-RU') + ' 000 ₽/ч', cost: shapingTotal });
+      grandTotal += shapingTotal;
+    }
+
+    // 8. Debris cutting
+    var debrisPrice = parseInt(document.getElementById('debris-diameter').value);
+    var debrisCount = parseInt(document.getElementById('debris-count').value) || 0;
+    if (debrisCount > 0) {
+      var debrisTotal = debrisPrice * debrisCount;
+      rows.push({ name: 'Распил стволов и порубочных остатков на чурки (дрова)', detail: document.getElementById('debris-diameter').selectedOptions[0].text + ' × ' + debrisCount + ' шт.', cost: debrisTotal });
+      grandTotal += debrisTotal;
+    }
+
+    // 9. Carrying debris
+    var carryDist = parseInt(document.getElementById('carry-distance').value) || 0;
+    var carryCost = 0;
+    if (carryDist > 10) {
+      carryCost = Math.ceil((carryDist - 10) / 10) * 1000;
+    }
+    if (carryDist > 0) {
+      rows.push({ name: 'Вынос порубочных остатков', detail: carryDist + ' м' + (carryCost === 0 ? ' — бесплатно (до 10 м)' : ' — ' + carryCost.toLocaleString('ru-RU') + ' ₽'), cost: carryCost });
+      grandTotal += carryCost;
+    }
+
+    // 10. Debris removal by truck
+    var removalTrees = parseInt(document.getElementById('removal-trees').value) || 0;
+    if (removalTrees > 0) {
+      var removalTotal = removalTrees * 5000;
+      rows.push({ name: 'Вывоз порубочных остатков', detail: removalTrees + ' м³ (1 дерево = 1 машина) × 5 000 ₽', cost: removalTotal });
+      grandTotal += removalTotal;
+    }
+
+    // Render result
+    var tbody = document.getElementById('result-tbody');
+    tbody.innerHTML = '';
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Не выбрано ни одной услуги</td></tr>';
+    } else {
+      rows.forEach(function(row) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + row.name + '</td><td>' + row.detail + '</td><td style="text-align:right;font-weight:600;">' + fmt(row.cost) + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+    document.getElementById('result-total').textContent = 'Итого: ' + fmt(grandTotal);
+    document.getElementById('result-block').classList.add('visible');
+
+    // Generate tech spec
+    generateTechSpec(rows, grandTotal);
+    document.getElementById('send-print-btns').style.display = 'flex';
+  }
+
+  function generateTechSpec(rows, grandTotal) {
+    var contactInfo = document.getElementById('contact-notes').value.trim();
+    var now = new Date();
+    var dateStr = now.toLocaleDateString('ru-RU');
+
+    var text = 'ТЕХНИЧЕСКОЕ ЗАДАНИЕ № ' + now.getTime().toString().slice(-6) + '\n';
+    text += 'от «' + dateStr + '»\n\n';
+    text += 'Исполнитель: Сторожев Виталий Олегович, арборист высшей категории\n';
+    text += 'Телефон: 8 (912) 889-16-79\n';
+    text += 'Сервис: БерАрбо\n\n';
+    text += '─────────────────────────────────────\n';
+    text += 'ПЕРЕЧЕНЬ УСЛУГ:\n\n';
+
+    rows.forEach(function(row, i) {
+      text += (i + 1) + '. ' + row.name + '\n';
+      text += '   ' + row.detail + '\n';
+      text += '   Стоимость: ' + row.cost.toLocaleString('ru-RU') + ' ₽\n\n';
+    });
+
+    text += '─────────────────────────────────────\n';
+    text += 'ИТОГО: ' + grandTotal.toLocaleString('ru-RU') + ' ₽\n\n';
+
+    if (contactInfo) {
+      text += '─────────────────────────────────────\n';
+      text += 'КОНТАКТНАЯ ИНФОРМАЦИЯ И ПОЖЕЛАНИЯ:\n\n';
+      text += contactInfo + '\n\n';
+    }
+
+    text += '─────────────────────────────────────\n';
+    text += 'Условия:\n';
+    text += '— Оплата производится по факту выполненных работ.\n';
+    text += '— Окончательная стоимость может быть скорректирована после осмотра объекта.\n';
+    text += '— Часы работы указаны ориентировочно.\n\n';
+    text += 'Дата: «' + dateStr + '»\n\n';
+
+    document.getElementById('tech-spec-content').textContent = text;
+    document.getElementById('tech-spec-block').classList.add('visible');
+  }
+
+  function sendTechSpec() {
+    var content = document.getElementById('tech-spec-content').textContent;
+    var subject = encodeURIComponent('Техническое задание — БерАрбо');
+    var body = encodeURIComponent(content);
+    window.location.href = 'mailto:v.o.sto@yandex.ru?subject=' + subject + '&body=' + body;
+  }
+</script>
+
+</body>
+</html>
